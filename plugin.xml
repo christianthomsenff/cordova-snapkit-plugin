@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="cordova-snapkit-plugin" version="0.2.3">
+    <name>Device</name>
+    <description>Cordova Snapkit Plugin</description>
+    <license>Apache 2.0</license>
+    <keywords>cordova,snapkit</keywords>
+    <js-module src="www/main.js" name="main">
+        <clobbers target="main" />
+    </js-module>
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Device">
+                <param name="ios-package" value="CDVDevice"/>
+            </feature>
+        </config-file>
+        <header-file src="src/ios/CDVDevice.h" />
+        <source-file src="src/ios/CDVDevice.m" />
+    </platform>
+    <platform name="android">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Echo">
+                <param name="android-package" value="org.apache.cordova.plugin.Echo"/>
+            </feature>
+        </config-file>
+
+        <source-file src="src/android/Echo.java" target-dir="src/org/apache/cordova/plugin" />
+    </platform>
+</plugin>
