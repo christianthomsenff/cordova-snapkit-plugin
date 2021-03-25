@@ -1,0 +1,19 @@
+{
+  "name": "cordova-snapkit-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/christianthomsenff/cordova-snapkit-plugin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/christianthomsenff/cordova-snapkit-plugin/issues"
+  },
+  "homepage": "https://github.com/christianthomsenff/cordova-snapkit-plugin#readme"
+}

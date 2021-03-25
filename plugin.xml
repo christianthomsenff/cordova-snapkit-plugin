@@ -1,29 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="cordova-snapkit-plugin" version="0.2.3">
-    <name>Device</name>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0" id="cordova-snapkit-plugin" version="0.2.4">
+    <name>Echo</name>
     <description>Cordova Snapkit Plugin</description>
     <license>Apache 2.0</license>
     <keywords>cordova,snapkit</keywords>
-    <js-module src="www/main.js" name="main">
-        <clobbers target="main" />
+    <js-module src="www/main.js" name="Snapkit">
+        <clobbers target="Snapkit" />
     </js-module>
-    <platform name="ios">
-        <config-file target="config.xml" parent="/*">
-            <feature name="Device">
-                <param name="ios-package" value="CDVDevice"/>
-            </feature>
-        </config-file>
-        <header-file src="src/ios/CDVDevice.h" />
-        <source-file src="src/ios/CDVDevice.m" />
-    </platform>
+    
+    <!-- android -->
     <platform name="android">
         <config-file target="config.xml" parent="/*">
-            <feature name="Echo">
-                <param name="android-package" value="org.apache.cordova.plugin.Echo"/>
+            <feature name="LoginKit">
+                <param name="android-package" value="org.apache.cordova.plugin.LoginKit"/>
+            </feature>
+            <feature name="CreativeKit">
+                <param name="android-package" value="org.apache.cordova.plugin.CreativeKit"/>
+            </feature>
+            <feature name="AdKit">
+                <param name="android-package" value="org.apache.cordova.plugin.AdKit"/>
             </feature>
         </config-file>
 
-        <source-file src="src/android/Echo.java" target-dir="src/org/apache/cordova/plugin" />
+        <source-file src="src/android/LoginKit.java" target-dir="src/org/apache/cordova/plugin" />
+        <source-file src="src/android/CreativeKit.java" target-dir="src/org/apache/cordova/plugin" />
+        <source-file src="src/android/AdKit.java" target-dir="src/org/apache/cordova/plugin" />
+        
+        <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
+
+    </platform>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="CreativeKit">
+                <param name="ios-package" value="CreativeKit" />
+            </feature>
+            <feature name="LoginKit">
+                <param name="ios-package" value="LoginKit" />
+            </feature>
+        </config-file>
+
+       <!-- <framework src="src/ios/SnapSDK/SCSDKCoreKit.framework"   embed="true" custom="true" />
+        <framework src="src/ios/SnapSDK/SCSDKLoginKit.framework"   embed="true" custom="true" />
+        -->
+        <podspec>
+            <config>
+            </config>
+            <pods use-frameworks="true">
+                <pod name="SnapSDK" spec="1.4.0" />
+            </pods>
+        </podspec>
+
+        <source-file src="src/ios/LoginKit.swift" />
+        <source-file src="src/ios/CreativeKit.swift" />
+        <header-file src="src/ios/AppDelegate+LoginKit.h" />
+        <source-file src="src/ios/AppDelegate+LoginKit.m" />
+        <dependency id="cordova-plugin-add-swift-support"/>
+    </platform>
+
+
+    
+    <!-- browser -->
+    <platform name="browser">
     </platform>
 </plugin>
