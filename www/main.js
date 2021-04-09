@@ -53,19 +53,28 @@ class CreativeKit {
 }
 
 class AdKit {
-    async loadInterstitial() {
+
+    async init(snapKitAppId) {
         return new Promise((resolve, reject) => {
             cordova.exec(resolve, (err) => {
                 reject(err);
-            }, "AdKit", "loadInterstitial");
+            }, "AdKit", "initializeAdkit", [snapKitAppId]);
         });
     }
 
-    async loadRewarded() {
+    async loadInterstitial(slotId) {
         return new Promise((resolve, reject) => {
             cordova.exec(resolve, (err) => {
                 reject(err);
-            }, "AdKit", "loadRewarded");
+            }, "AdKit", "loadInterstitial", [slotId]);
+        });
+    }
+
+    async loadRewarded(slotId) {
+        return new Promise((resolve, reject) => {
+            cordova.exec(resolve, (err) => {
+                reject(err);
+            }, "AdKit", "loadRewarded", [slotId]);
         });
     }
 

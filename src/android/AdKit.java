@@ -27,67 +27,114 @@ import com.snap.adkit.external.SnapAdEventListener;
 import com.snap.adkit.external.SnapAdKitEvent;
 import com.snap.adkit.dagger.AdKitApplication;
 
-/**
- * This class echoes a string called from JavaScript.
- */
 public class AdKit extends CordovaPlugin {
 
-    /*class AdEventListener implements SnapAdEventListener {
-
-        public void onEvent(SnapAdKitEvent event, String slotId) {
-            Log.d("AdKit", "Got some event! " + event);
-            executeGlobalJavascript("var callback = window.AdKit.onEvent; if(callback) callback();");
-        }
-
-    }*/
-
-    SnapAdEventListener adListener;
+    SnapAdKit snapAdKit;
 
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
 
-        Log.d("AdKit", "Hello world!");
-        
-        adListener = new SnapAdEventListener() {
-            @Override
-            public void onEvent(SnapAdKitEvent event, String slotId) {
-                Log.d("AdKit", "Got some event! " + event);
-                executeGlobalJavascript("var callback = window.AdKit.onEvent; if(callback) callback();");
-            }
-        };
-        
-        Context context = this.cordova.getActivity().getApplicationContext();
-        AdKitApplication.init(context);
-        SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
-        snapAdKit.setupListener(adListener);
-        snapAdKit.init();
+        final Context context = this.cordova.getActivity().getApplicationContext();
 
-        final Location location = new Location("my-location");
-        location.setLatitude(1.2345d);
-        location.setLongitude(1.2345d);
-
-        snapAdKit.register("59c024eb-4726-479b-b48c-f279af6d1776", location);
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                Log.d("AdKit", "Init called!");
+                AdKitApplication.init(context);
+                SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
+                snapAdKit.init();
+            };
+        });
     }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
+        if(action.equals("initializeAdkit")) {
+            this.Init(args.getString(0), callbackContext);
+            return true;
+        }
+
         if(action.equals("loadInterstitial")) {
-            this.LoadInterstitial(callbackContext);
+            this.LoadInterstitial(args.getString(0), callbackContext);
             return true;
         }
 
         if(action.equals("loadRewarded")) {
-            this.LoadRewarded(callbackContext);
+            this.LoadRewarded(args.getString(0), callbackContext);
             return true;
         }
 
         if(action.equals("playAd")) {
-            this.LoadRewarded(callbackContext);
+            this.PlayAd(callbackContext);
             return true;
         }
 
         return false;
+    }
+
+    private void Init(String snapKitAppId, CallbackContext callbackContext) {
+        SnapAdEventListener adListener = new SnapAdEventListener() {
+            @Override
+            public void onEvent(SnapAdKitEvent event, String slotId) {
+                Log.d("AdKit", "Got some event! " + event);
+
+                switch(event.toString())
+                {
+                    case "SnapAdInitSucceeded":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdInitSucceeded; if(callback) callback();");
+                        break;
+                        
+                    case "SnapAdInitFailed":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdInitFailed; if(callback) callback('" + event + "');");
+                    break;
+                    
+                    case "SnapAdLoadSucceeded":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdLoadSucceeded; if(callback) callback('" + slotId + "');");
+                        break;
+                    
+                    case "SnapAdLoadFailed":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdInitFailed; if(callback) callback('" + slotId + "');");
+                        break;
+                        
+                    case "SnapAdRewardedEarned":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdRewardedEarned; if(callback) callback('" + slotId + "');");
+                        break;
+                        
+                    case "SnapAdVisible":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdVisible; if(callback) callback('" + slotId + "');");
+                        break;
+                    
+                    case "SnapAdClicked":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdClicked; if(callback) callback('" + slotId + "');");
+                        break;
+                    
+                    case "SnapAdDismissed":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdDismissed; if(callback) callback('" + slotId + "');");
+                        break;
+                    
+                    case "SnapAdImpressionHappened":
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdImpressionHappened; if(callback) callback('" + slotId + "');");
+                        break;
+                }
+            }
+        };
+        
+        try {
+
+            Log.d("AdKit", "Calling init");
+
+            SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
+            snapAdKit.setupListener(adListener);
+            final Location location = new Location("my-location");
+            location.setLatitude(33.7490d);
+            location.setLongitude(84.3880d);
+            snapAdKit.register(snapKitAppId, location);
+            this.snapAdKit = snapAdKit;
+
+            callbackContext.success("OK");
+        } catch(Error err) {
+            callbackContext.error("Error! " + err.toString());
+        }
     }
     
     private void executeGlobalJavascript(final String jsString) {
@@ -99,24 +146,22 @@ public class AdKit extends CordovaPlugin {
         });
     }
 
-    private void LoadInterstitial(CallbackContext callbackContext) {
+    private void LoadInterstitial(String slotId, CallbackContext callbackContext) {
         try {
-           /* Context context = this.cordova.getActivity().getApplicationContext();
-            View viewRoot = this.cordova.getActivity().getWindow().getDecorView().getRootView();
-            View mLoginButton = SnapLogin.getButton(context, (ViewGroup) viewRoot);
-*/
+            this.snapAdKit.updateSlotId(slotId);
+            this.snapAdKit.loadInterstitial();
+
             callbackContext.success("Load interstitial OK");
         } catch(Error err) {
             callbackContext.error("Error! " + err.toString());
         }
     }
 
-    private void LoadRewarded(CallbackContext callbackContext) {
+    private void LoadRewarded(String slotId, CallbackContext callbackContext) {
         try {
-           /* Context context = this.cordova.getActivity().getApplicationContext();
-            View viewRoot = this.cordova.getActivity().getWindow().getDecorView().getRootView();
-            View mLoginButton = SnapLogin.getButton(context, (ViewGroup) viewRoot);
-*/
+            this.snapAdKit.updateSlotId(slotId);
+            this.snapAdKit.loadRewarded();
+
             callbackContext.success("Load rewarded OK");
         } catch(Error err) {
             callbackContext.error("Error! " + err.toString());
@@ -125,10 +170,8 @@ public class AdKit extends CordovaPlugin {
 
     private void PlayAd(CallbackContext callbackContext) {
         try {
-           /* Context context = this.cordova.getActivity().getApplicationContext();
-            View viewRoot = this.cordova.getActivity().getWindow().getDecorView().getRootView();
-            View mLoginButton = SnapLogin.getButton(context, (ViewGroup) viewRoot);
-*/
+            this.snapAdKit.playAd();
+
             callbackContext.success("Play ad OK");
         } catch(Error err) {
             callbackContext.error("Error! " + err.toString());
