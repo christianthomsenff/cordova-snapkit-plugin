@@ -49,7 +49,7 @@ public class AdKit extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if(action.equals("initializeAdkit")) {
+        if(action.equals("init")) {
             this.Init(args.getString(0), callbackContext);
             return true;
         }

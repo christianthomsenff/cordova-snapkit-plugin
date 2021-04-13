@@ -13,11 +13,11 @@
         <config-file target="config.xml" parent="/*">
             <feature name="LoginKit">
                 <param name="android-package" value="org.apache.cordova.plugin.LoginKit"/>
-                <param name="onload" value="true" />
+                <!--<param name="onload" value="true" /> -->
             </feature>
             <feature name="CreativeKit">
                 <param name="android-package" value="org.apache.cordova.plugin.CreativeKit"/>
-                <param name="onload" value="true" />
+                <!--<param name="onload" value="true" /> -->
             </feature>
             <feature name="AdKit">
                 <param name="android-package" value="org.apache.cordova.plugin.AdKit"/>
@@ -43,10 +43,6 @@
                 <param name="ios-package" value="LoginKit" />
                 <param name="onload" value="true" />
             </feature>
-            <feature name="AdKit">
-                <param name="ios-package" value="AdKit" />
-                <param name="onload" value="true" />
-            </feature>
         </config-file>
 
        <!-- <framework src="src/ios/SnapSDK/SCSDKCoreKit.framework"   embed="true" custom="true" />
@@ -57,11 +53,9 @@
             </config>
             <pods use-frameworks="true">
                 <pod name="SnapSDK" spec="1.4.0" />
-                <pod name="SAKSDK" />
             </pods>
         </podspec>
 
-        <!--<source-file src="src/ios/AdKit.swift" /> -->
         <source-file src="src/ios/LoginKit.swift" />
         <source-file src="src/ios/CreativeKit.swift" />
         <header-file src="src/ios/AppDelegate+LoginKit.h" />
