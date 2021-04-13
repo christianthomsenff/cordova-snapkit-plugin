@@ -61,9 +61,9 @@
             </pods>
         </podspec>
 
+        <!--<source-file src="src/ios/AdKit.swift" /> -->
         <source-file src="src/ios/LoginKit.swift" />
         <source-file src="src/ios/CreativeKit.swift" />
-        <source-file src="src/ios/AdKit.swift" />
         <header-file src="src/ios/AppDelegate+LoginKit.h" />
         <source-file src="src/ios/AppDelegate+LoginKit.m" />
         <dependency id="cordova-plugin-add-swift-support"/>

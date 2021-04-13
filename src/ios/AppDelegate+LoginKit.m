@@ -6,8 +6,10 @@
         openURL:(NSURL *)url
         options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options
 {
+    
     if ([SCSDKLoginClient application:application openURL:url options:options]) {
-        return YES;    } else {
+        return YES;
+    } else {
         return NO;
     }
 }
