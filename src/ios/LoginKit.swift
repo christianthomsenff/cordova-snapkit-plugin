@@ -3,14 +3,49 @@ import WebKit
 
 @objc(LoginKit) class LoginKit : CDVPlugin 
 {
+    
+    override func pluginInitialize() {
+        super.pluginInitialize();
+        /*SCSDKLoginClient.initialize();
+        
+        SCSDKLoginClient.refreshAccessToken(completion: { (accessToken: String?, error: Error?) in
+            
+            if let error = error
+            {
+                print("Error!");
+                print(error);
+            }
+        });*/
+    }
+    
     @objc(login:)
     func login(command: CDVInvokedUrlCommand) {
-        DispatchQueue.main.async {
+        
+            SCSDKLoginClient.login(from: self.viewController!) { (success: Bool, error: Error?) in
+                if success {
+                    print("Login success!");
+                                        
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "OK");
+                    self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+                }
+                if let error = error {
+                    print(error);
+                    
+                    self.commandDelegate!.evalJs("var callback = window.LoginKit.onLoginFailed; if(callback) callback();")
+                    
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "Fail!");
+                    self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+                }
+            }
+        /*DispatchQueue.main.async {
             SCSDKLoginClient.login(from: self.viewController!) { (success : Bool, error : Error?) in
                 
                 if success {
                     print("Login success!");
-
+                                        
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "OK");
+                    self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+                    
                     self.commandDelegate!.evalJs("var callback = window.LoginKit.onLoginSucceeded; if(callback) callback();")
                 } else {
                     
@@ -20,31 +55,29 @@ import WebKit
                 if let error = error {
                     print("Login error!");
                     print(error);
-
-                    let pluginResult = CDVPluginResult (status: CDVCommandStatus_ERROR, messageAs: String.init(format: "Login failed. Details: %@", error.localizedDescription));
-                    self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
                     
                     self.commandDelegate!.evalJs("var callback = window.LoginKit.onLoginFailed; if(callback) callback();")
+                    
+                    let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "Fail!");
+                    self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
                 }
             }
-            
-            print("Sending response...");
-            let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "The plugin succeeded");
-            self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
-        };
+        };*/
     }
 
     @objc(isLoggedIn:)
     func isLoggedIn(command: CDVInvokedUrlCommand) 
     {
         print("Hello from LoginKit is logged in?");
-        if SCSDKLoginClient.isUserLoggedIn 
+        print("Access token:" + SCSDKLoginClient.getAccessToken());
+            
+        if SCSDKLoginClient.isUserLoggedIn
         {
             print("Logged in = true");
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "true");
             self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
-        } 
-        else 
+        }
+        else
         {
             print("Logged in = false");
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "false");

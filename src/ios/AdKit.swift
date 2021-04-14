@@ -17,7 +17,7 @@ import SAKSDK.SAKMobileAd;
     }
     
     @objc(initializeAdkit:)
-    func initializeAdKit(command: CDVInvokedUrlCommand) {
+    func initializeAdkit(command: CDVInvokedUrlCommand) {
         
         print("initializeAdKit!");
         
