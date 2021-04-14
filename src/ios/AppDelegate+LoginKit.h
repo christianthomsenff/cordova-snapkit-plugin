@@ -3,4 +3,8 @@
 
 @interface AppDelegate(LoginKit)
 
+- (BOOL)application:(UIApplication *)application
+        openURL:(NSURL *)url
+            options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options;
+
 @end

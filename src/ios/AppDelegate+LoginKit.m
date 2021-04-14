@@ -7,7 +7,9 @@
         options:(NSDictionary<UIApplicationOpenURLOptionsKey, id> *)options
 {
     
-    if ([SCSDKLoginClient application:application openURL:url options:options]) {
+    BOOL result = [SCSDKLoginClient application:application openURL:url options:options];
+
+    if(result) {
         return YES;
     } else {
         return NO;
