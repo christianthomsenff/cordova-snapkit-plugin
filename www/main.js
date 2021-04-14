@@ -58,7 +58,7 @@ class AdKit {
         return new Promise((resolve, reject) => {
             cordova.exec(resolve, (err) => {
                 reject(err);
-            }, "AdKit", "init", [snapKitAppId]);
+            }, "AdKit", "initializeAdKit", [snapKitAppId]);
         });
     }
 

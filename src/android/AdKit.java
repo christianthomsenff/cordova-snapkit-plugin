@@ -36,21 +36,20 @@ public class AdKit extends CordovaPlugin {
         super.initialize(cordova, webView);
 
         final Context context = this.cordova.getActivity().getApplicationContext();
+        AdKitApplication.init(context);
+    }
 
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                Log.d("AdKit", "Init called!");
-                AdKitApplication.init(context);
-                SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
-                snapAdKit.init();
-            };
-        });
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        this.snapAdKit.destroy();
     }
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
-        if(action.equals("init")) {
-            this.Init(args.getString(0), callbackContext);
+        if(action.equals("initializeAdKit")) {
+            this.InitializeAdKit(args.getString(0), callbackContext);
             return true;
         }
 
@@ -72,7 +71,7 @@ public class AdKit extends CordovaPlugin {
         return false;
     }
 
-    private void Init(String snapKitAppId, CallbackContext callbackContext) {
+    private void InitializeAdKit(String snapKitAppId, CallbackContext callbackContext) {
         SnapAdEventListener adListener = new SnapAdEventListener() {
             @Override
             public void onEvent(SnapAdKitEvent event, String slotId) {
@@ -121,14 +120,15 @@ public class AdKit extends CordovaPlugin {
         
         try {
 
-            Log.d("AdKit", "Calling init");
-
+            Log.d("AdKit", "Init called!");
             SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
             snapAdKit.setupListener(adListener);
-            final Location location = new Location("my-location");
+            snapAdKit.init();
+
+            /*final Location location = new Location("my-location");
             location.setLatitude(33.7490d);
-            location.setLongitude(84.3880d);
-            snapAdKit.register(snapKitAppId, location);
+            location.setLongitude(84.3880d);*/
+            snapAdKit.register(snapKitAppId, null);
             this.snapAdKit = snapAdKit;
 
             callbackContext.success("OK");

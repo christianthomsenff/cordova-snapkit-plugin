@@ -13,11 +13,11 @@
         <config-file target="config.xml" parent="/*">
             <feature name="LoginKit">
                 <param name="android-package" value="org.apache.cordova.plugin.LoginKit"/>
-                <!--<param name="onload" value="true" /> -->
+                <param name="onload" value="true" />
             </feature>
             <feature name="CreativeKit">
                 <param name="android-package" value="org.apache.cordova.plugin.CreativeKit"/>
-                <!--<param name="onload" value="true" /> -->
+                <param name="onload" value="true" />
             </feature>
             <feature name="AdKit">
                 <param name="android-package" value="org.apache.cordova.plugin.AdKit"/>
