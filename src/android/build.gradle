@@ -15,6 +15,10 @@ android {
 buildscript {
     repositories {
         maven { url 'http://repo1.maven.org/maven2' }
+        maven { url 'https://artifacts.applovin.com/android' }
+    }
+    dependencies {
+        classpath "com.applovin.quality:AppLovinQualityServiceGradlePlugin:3.+"
     }
 }
 
@@ -26,6 +30,11 @@ repositories {
         url "https://storage.googleapis.com/snap-kit-build/maven"
     }
     
+}
+
+apply plugin: 'applovin-quality-service'
+applovin {
+    apiKey "5716ba16818c5179a24546546e78567260344b3607813393725e3275ed9da2322fc3ff486c76f65f231731"    
 }
 
 ext {
