@@ -99,7 +99,7 @@ public class AdKit extends CordovaPlugin {
                         break;
                     
                     case "SnapAdLoadFailed":
-                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdInitFailed; if(callback) callback('" + slotId + "');");
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdLoadFailed; if(callback) callback('" + slotId + "');");
                         break;
                         
                     case "SnapAdRewardedEarned":

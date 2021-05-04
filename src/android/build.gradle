@@ -15,10 +15,6 @@ android {
 buildscript {
     repositories {
         maven { url 'http://repo1.maven.org/maven2' }
-        maven { url 'https://artifacts.applovin.com/android' }
-    }
-    dependencies {
-        classpath "com.applovin.quality:AppLovinQualityServiceGradlePlugin:3.+"
     }
 }
 
@@ -32,11 +28,6 @@ repositories {
     
 }
 
-apply plugin: 'applovin-quality-service'
-applovin {
-    apiKey "5716ba16818c5179a24546546e78567260344b3607813393725e3275ed9da2322fc3ff486c76f65f231731"    
-}
-
 ext {
     snapKitSdkVersion = '1.8.0'
 }
@@ -45,6 +36,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation "com.applovin.mediation:google-adapter:+"
+    implementation "com.applovin.mediation:unityads-adapter:+"
+    implementation "com.applovin.mediation:vungle-adapter:+"
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
