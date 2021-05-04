@@ -40,7 +40,9 @@ import SCSDKCreativeKit
             UIGraphicsEndImageContext();*/
             
             let sticker = SCSDKSnapSticker(stickerUrl: URL(string: dataUrl)!, isAnimated: false);
-            //let sticker = SCSDKSnapSticker(stickerImage: resizedImage!);
+            //let sticker = SCSDKSnapSticker(stickerImage: resizedImage!)
+            sticker.width = width;
+            sticker.height = height;
             sticker.posX = posX;
             sticker.posY = posY;
             sticker.rotation = rotation;

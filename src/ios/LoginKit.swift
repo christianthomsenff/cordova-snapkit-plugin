@@ -6,6 +6,8 @@ import WebKit
     
     override func pluginInitialize() {
         super.pluginInitialize();
+        
+        
         /*SCSDKLoginClient.initialize();
         
         SCSDKLoginClient.refreshAccessToken(completion: { (accessToken: String?, error: Error?) in
