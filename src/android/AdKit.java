@@ -34,9 +34,16 @@ public class AdKit extends CordovaPlugin {
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-
         final Context context = this.cordova.getActivity().getApplicationContext();
-        AdKitApplication.init(context);
+
+        cordova.getThreadPool().execute(new Runnable() {
+            public void run() {
+                Log.d("AdKit", "Init called!");
+                AdKitApplication.init(context);
+                SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
+                snapAdKit.init();
+            };
+        });
     }
 
     @Override
@@ -92,7 +99,7 @@ public class AdKit extends CordovaPlugin {
                         break;
                     
                     case "SnapAdLoadFailed":
-                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdInitFailed; if(callback) callback('" + slotId + "');");
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdLoadFailed; if(callback) callback('" + slotId + "');");
                         break;
                         
                     case "SnapAdRewardedEarned":
@@ -121,13 +128,12 @@ public class AdKit extends CordovaPlugin {
         try {
 
             Log.d("AdKit", "Init called!");
-            SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
-            snapAdKit.setupListener(adListener);
-            snapAdKit.init();
 
             /*final Location location = new Location("my-location");
             location.setLatitude(33.7490d);
             location.setLongitude(84.3880d);*/
+            SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
+            snapAdKit.setupListener(adListener);
             snapAdKit.register(snapKitAppId, null);
             this.snapAdKit = snapAdKit;
 
