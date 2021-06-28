@@ -25,6 +25,8 @@ import java.util.Base64;
 import com.snap.adkit.external.SnapAdKit;
 import com.snap.adkit.external.SnapAdEventListener;
 import com.snap.adkit.external.SnapAdKitEvent;
+import com.snap.adkit.external.SnapAdInitSucceeded;
+import com.snap.adkit.external.SnapAdInitFailed;
 import com.snap.adkit.dagger.AdKitApplication;
 
 public class AdKit extends CordovaPlugin {
@@ -34,16 +36,6 @@ public class AdKit extends CordovaPlugin {
     @Override
     public void initialize(CordovaInterface cordova, CordovaWebView webView) {
         super.initialize(cordova, webView);
-        final Context context = this.cordova.getActivity().getApplicationContext();
-
-        cordova.getThreadPool().execute(new Runnable() {
-            public void run() {
-                Log.d("AdKit", "Init called!");
-                AdKitApplication.init(context);
-                SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
-                snapAdKit.init();
-            };
-        });
     }
 
     @Override
@@ -82,15 +74,21 @@ public class AdKit extends CordovaPlugin {
         SnapAdEventListener adListener = new SnapAdEventListener() {
             @Override
             public void onEvent(SnapAdKitEvent event, String slotId) {
-                Log.d("AdKit", "Got some event! " + event);
+                String eventName = event.toString();
+                final int indexOfParenthesis = eventName.indexOf("(");
+                if(indexOfParenthesis != -1){
+                    eventName = event.toString().substring(0, indexOfParenthesis);
+                }
+                Log.d("AdKit", "Got some event! " + eventName + "");
 
-                switch(event.toString())
+                switch(eventName)
                 {
                     case "SnapAdInitSucceeded":
                         executeGlobalJavascript("var callback = window.AdKit.onSnapAdInitSucceeded; if(callback) callback();");
                         break;
                         
                     case "SnapAdInitFailed":
+                        Log.d("Adkit", "trying to execute ad init fail callback...");
                         executeGlobalJavascript("var callback = window.AdKit.onSnapAdInitFailed; if(callback) callback('" + event + "');");
                     break;
                     
@@ -99,7 +97,7 @@ public class AdKit extends CordovaPlugin {
                         break;
                     
                     case "SnapAdLoadFailed":
-                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdLoadFailed; if(callback) callback('" + slotId + "');");
+                        executeGlobalJavascript("console.log('trying to do callback!'); var callback = window.AdKit.onSnapAdLoadFailed; if(callback) { console.log('Doing callback!'); callback('" + slotId + "'); }");
                         break;
                         
                     case "SnapAdRewardedEarned":
@@ -121,18 +119,26 @@ public class AdKit extends CordovaPlugin {
                     case "SnapAdImpressionHappened":
                         executeGlobalJavascript("var callback = window.AdKit.onSnapAdImpressionHappened; if(callback) callback('" + slotId + "');");
                         break;
+
+                    default:                
+                    Log.d("AdKit", "Switch didn't get the event...");
+                        break;
                 }
             }
         };
         
         try {
+            Log.d("AdKit", "Trying init....!");
+            final Context context = this.cordova.getActivity().getApplicationContext();
+            AdKitApplication.init(context);
+            SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
+            snapAdKit.init();
 
             Log.d("AdKit", "Init called!");
 
             /*final Location location = new Location("my-location");
             location.setLatitude(33.7490d);
             location.setLongitude(84.3880d);*/
-            SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
             snapAdKit.setupListener(adListener);
             snapAdKit.register(snapKitAppId, null);
             this.snapAdKit = snapAdKit;
