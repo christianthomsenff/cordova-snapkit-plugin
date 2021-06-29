@@ -16,14 +16,13 @@ See their documentation on the developer portal https://kit.snapchat.com/docs/de
 
 # LoginKit
 
-
 ## Android  congfiuration
 
 LoginKit requires some changes to the AndroidManifest. Paste the following in your app's config.xml between the ```<platform name="android">``` start and end tag. Input correct values for client id, redirect url and scheme,host,path.
 
 ```
         <config-file parent="/manifest/application" target="AndroidManifest.xml">
-            <meta-data android:name="com.snapchat.kit.sdk.clientId" android:value="your app’s client id" />
+            <meta-data android:name="com.snapchat.kit.sdk.clientId" android:value="your app’s OAuth2 client id" />
             <meta-data android:name="com.snapchat.kit.sdk.redirectUrl" android:value="the url that will handle login completion" />
             <meta-data android:name="com.snapchat.kit.sdk.scopes" android:resource="@array/snap_connect_scopes" />
 
@@ -38,7 +37,7 @@ LoginKit requires some changes to the AndroidManifest. Paste the following in yo
                         e.g., if your redirect url is myapp://snap-kit/oauth2
                             android:scheme="myapp"
                             android:host="snap-kit"
-                            android:path="oauth2"
+                            android:path="/oauth2"   (make sure to include /)
                     !-->
 
                     <data
@@ -72,6 +71,15 @@ And add a line after the ```</config-file>``` tag that copies this file to the c
 ```
 
 More info on scopes and Android configuration can be found at: https://kit.snapchat.com/docs/login-kit-android
+
+Additionally you may need to enable AndroidX to be able to build
+
+```
+<preference name="AndroidXEnabled" value="true" />
+```
+
+And finally 
+
 
  ## iOS configuration
 
@@ -186,3 +194,6 @@ img.onload = (evt) => {
 };
 ```
 
+## Problems?
+
+While implementing Loginkit you might get to a point where returning from Snapchat shows an error with "Something went wrong!". This is a catch all error that indicates a mismatch between the IDs, bundle IDs, user whitelisting or redirect URIs in your app and in the Snapkit portal. Make sure to double check that your app is setup correctly in Snapkit and all values match with your app.
