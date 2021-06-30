@@ -96,12 +96,13 @@ public class CreativeKit extends CordovaPlugin {
             File stickerFile = saveBase64Image(this.cordova.getActivity().getApplicationContext(), dataURL);
             final SnapContent content = new SnapLiveCameraContent();
 
-            /*if (!TextUtils.isEmpty(mCaptionField.getText())) {
-                content.setCaptionText(mCaptionField.getText().toString());
+            if (json.has("caption")) {
+                content.setCaptionText(json.getString("caption"));
             }
-            if (!TextUtils.isEmpty(mUrlField.getText())) {
-                content.setAttachmentUrl(mUrlField.getText().toString());
-            }*/
+
+            if (json.has("attachmentUrl")) {
+                content.setAttachmentUrl(json.getString("attachmentUrl"));
+            }
 
             final SnapSticker snapSticker = snapMediaFactory.getSnapStickerFromFile(stickerFile);
             snapSticker.setHeight(json.getInt("height"));
