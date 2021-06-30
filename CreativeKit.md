@@ -26,6 +26,7 @@ Add access to FileProvider by adding the following in the ```<config-file ...>``
 </provider>
 ```
 
+Images have to be saved to a temporary location before they can be shared. 
 Create an xml file and save it at the path res/xml/file_paths.xml with the following
 
 ```

@@ -22,12 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
+import com.snap.adkit.external.AdKitSlotType;
 import com.snap.adkit.external.SnapAdKit;
 import com.snap.adkit.external.SnapAdEventListener;
 import com.snap.adkit.external.SnapAdKitEvent;
 import com.snap.adkit.external.SnapAdInitSucceeded;
 import com.snap.adkit.external.SnapAdInitFailed;
 import com.snap.adkit.dagger.AdKitApplication;
+import com.snap.adkit.external.SnapAdKitSlot;
 
 public class AdKit extends CordovaPlugin {
 
@@ -63,7 +65,7 @@ public class AdKit extends CordovaPlugin {
         }
 
         if(action.equals("playAd")) {
-            this.PlayAd(callbackContext);
+            this.PlayAd(args.getString(0), callbackContext);
             return true;
         }
 
@@ -79,7 +81,6 @@ public class AdKit extends CordovaPlugin {
                 if(indexOfParenthesis != -1){
                     eventName = event.toString().substring(0, indexOfParenthesis);
                 }
-                Log.d("AdKit", "Got some event! " + eventName + "");
 
                 switch(eventName)
                 {
@@ -88,7 +89,6 @@ public class AdKit extends CordovaPlugin {
                         break;
                         
                     case "SnapAdInitFailed":
-                        Log.d("Adkit", "trying to execute ad init fail callback...");
                         executeGlobalJavascript("var callback = window.AdKit.onSnapAdInitFailed; if(callback) callback('" + event + "');");
                     break;
                     
@@ -97,7 +97,7 @@ public class AdKit extends CordovaPlugin {
                         break;
                     
                     case "SnapAdLoadFailed":
-                        executeGlobalJavascript("console.log('trying to do callback!'); var callback = window.AdKit.onSnapAdLoadFailed; if(callback) { console.log('Doing callback!'); callback('" + slotId + "'); }");
+                        executeGlobalJavascript("var callback = window.AdKit.onSnapAdLoadFailed; if(callback) { callback('" + slotId + "'); }");
                         break;
                         
                     case "SnapAdRewardedEarned":
@@ -120,25 +120,20 @@ public class AdKit extends CordovaPlugin {
                         executeGlobalJavascript("var callback = window.AdKit.onSnapAdImpressionHappened; if(callback) callback('" + slotId + "');");
                         break;
 
-                    default:                
-                    Log.d("AdKit", "Switch didn't get the event...");
+                    default:
+                        Log.d("AdKit", "Receieved event that wasn't handled! " + event.toString());
                         break;
                 }
             }
         };
         
         try {
-            Log.d("AdKit", "Trying init....!");
+            Log.d("AdKit", "Init called!");
             final Context context = this.cordova.getActivity().getApplicationContext();
             AdKitApplication.init(context);
             SnapAdKit snapAdKit = AdKitApplication.getSnapAdKit();
             snapAdKit.init();
 
-            Log.d("AdKit", "Init called!");
-
-            /*final Location location = new Location("my-location");
-            location.setLatitude(33.7490d);
-            location.setLongitude(84.3880d);*/
             snapAdKit.setupListener(adListener);
             snapAdKit.register(snapKitAppId, null);
             this.snapAdKit = snapAdKit;
@@ -160,8 +155,7 @@ public class AdKit extends CordovaPlugin {
 
     private void LoadInterstitial(String slotId, CallbackContext callbackContext) {
         try {
-            this.snapAdKit.updateSlotId(slotId);
-            this.snapAdKit.loadInterstitial();
+            this.snapAdKit.loadInterstitial(slotId, null);
 
             callbackContext.success("Load interstitial OK");
         } catch(Error err) {
@@ -171,8 +165,7 @@ public class AdKit extends CordovaPlugin {
 
     private void LoadRewarded(String slotId, CallbackContext callbackContext) {
         try {
-            this.snapAdKit.updateSlotId(slotId);
-            this.snapAdKit.loadRewarded();
+            this.snapAdKit.loadRewarded(slotId, null);
 
             callbackContext.success("Load rewarded OK");
         } catch(Error err) {
@@ -180,9 +173,9 @@ public class AdKit extends CordovaPlugin {
         }
     }
 
-    private void PlayAd(CallbackContext callbackContext) {
+    private void PlayAd(String slotId, CallbackContext callbackContext) {
         try {
-            this.snapAdKit.playAd();
+            this.snapAdKit.playAd(new SnapAdKitSlot(slotId, null));
 
             callbackContext.success("Play ad OK");
         } catch(Error err) {

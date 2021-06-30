@@ -78,15 +78,15 @@ class AdKit {
         });
     }
 
-    async playAd() {
+    async playAd(slotId) {
         return new Promise((resolve, reject) => {
             cordova.exec(resolve, (err) => {
                 reject(err);
-            }, "AdKit", "playAd");
+            }, "AdKit", "playAd", [slotId]);
         });
     }
 }
 
 window.LoginKit = new LoginKit();
 window.CreativeKit = new CreativeKit();
-window.AdKit = new AdKit();    
+window.AdKit = new AdKit();
