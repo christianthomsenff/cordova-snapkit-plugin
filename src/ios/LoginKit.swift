@@ -23,10 +23,13 @@ import WebKit
     @objc(login:)
     func login(command: CDVInvokedUrlCommand) {
         
-            SCSDKLoginClient.login(from: self.viewController!) { (success: Bool, error: Error?) in
+        SCSDKLoginClient.login(from: self.viewController!) { (success: Bool, error: Error?) in
                 if success {
                     print("Login success!");
-                                        
+                    
+                    
+                    self.commandDelegate!.evalJs("var callback = window.LoginKit.onLoginSucceeded; if(callback) callback();")
+                    
                     let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "OK");
                     self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
                 }
@@ -69,10 +72,7 @@ import WebKit
 
     @objc(isLoggedIn:)
     func isLoggedIn(command: CDVInvokedUrlCommand) 
-    {
-        print("Hello from LoginKit is logged in?");
-        print("Access token:" + SCSDKLoginClient.getAccessToken());
-            
+    {       
         if SCSDKLoginClient.isUserLoggedIn
         {
             print("Logged in = true");
@@ -115,15 +115,21 @@ import WebKit
 
             print("Successing");
             
-            var avatar: String?;
+            var avatar = "";
             let displayName = me["displayName"] as? String
-            let externalid = me["externalId"] as? String
-            if let bitmoji = me["bitmoji"] as? [String: Any] { 
-                avatar = bitmoji["avatar"] as? String
+            let externalid = me["externalId"] as? String;
+            if let bitmoji = me["bitmoji"] as? [String: Any] {
+                if(bitmoji["avatar"] != nil)
+                {
+                    avatar = bitmoji["avatar"] as! String;
+                    print("Settting avatar " + avatar);
+                }
             }
-
             
             let resultDict = ["bitmoji": avatar, "externalid": externalid, "displayname": displayName]
+            
+            print("Returning " + displayName! + ", " + externalid! + "avatar: " + avatar);
+            
             let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: resultDict as [String: String?]);
             self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
         }

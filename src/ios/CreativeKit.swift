@@ -49,8 +49,8 @@ import SCSDKCreativeKit
             
             let snap = SCSDKNoSnapContent()
             snap.sticker = sticker /* Optional */
-            snap.caption = "Cool caption" /* Optional */
-            snap.attachmentUrl = "https://www.snapchat.com" /* Optional */
+            //snap.caption = "Cool caption" /* Optional */
+            //snap.attachmentUrl = "https://www.snapchat.com" /* Optional */
             
             //view.isUserInteractionEnabled = false
             snapAPI?.startSending(snap) { [weak self] (error: Error?) in

@@ -2,9 +2,9 @@ import SAKSDK
 import SAKSDK.SAKRegisterRequestConfigurationBuilder;
 import SAKSDK.SAKMobileAd;
 
-@objc(AdKit) class AdKit : CDVPlugin, SAKInterstitialDelegate, SAKRewardedAdDelegate
+@objc(AdKit) class AdKit : CDVPlugin, SAKInterstitialDelegate, SAKRewardedAdDelegate//, SAKInterstitialDelegate, SAKRewardedAdDelegate
 {
-  
+
     var interstitial: SAKInterstitial?;
     var rewarded: SAKRewardedAd?;
     
@@ -24,7 +24,6 @@ import SAKSDK.SAKMobileAd;
         DispatchQueue.global(qos: .background).async {
             let config = SAKRegisterRequestConfigurationBuilder();
             config.withSnapKitAppId("59c024eb-4726-479b-b48c-f279af6d1776");
-            config.withAge(18)
             config.withAppStoreAppId(1559729141);
             
             let builtConfig = config.build()!;
@@ -38,7 +37,7 @@ import SAKSDK.SAKMobileAd;
                 if let error = error {
                     print("Ad kit init error!");
                     print(error.localizedDescription);
-                    self.fireJSCallback(eventName: "SnapAdInitFailed", arg: error.localizedDescription)
+                    self.fireJSCallback(eventName: "onSnapAdInitFailed", arg: error.localizedDescription)
                 }
             });
             
@@ -176,5 +175,5 @@ import SAKSDK.SAKMobileAd;
     func fireJSCallback(eventName: String, arg: String) {
         self.commandDelegate!.evalJs("var callback = window.AdKit." + eventName + "; if(callback) callback(\"\(arg)\");");
     }
-    
+
 }
