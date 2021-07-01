@@ -57,8 +57,8 @@ var sticker = {
     centerX: 0.5,
     centerY: 0.5,
     rotation: 300,
-    dataUrl: "data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
-    caption: "Yay!" //Optional,
+    dataUrl: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==",
+    caption: "Cool caption" //Optional,
     attachmentUrl: "https://snap.com" //Optional
 };
 
@@ -68,3 +68,5 @@ window.CreativeKit.share(sticker).then(() => {
     console.log(err);
 });
 ```
+
+Note as of writing the sticker won't show up on iOS without an attachmentUrl!

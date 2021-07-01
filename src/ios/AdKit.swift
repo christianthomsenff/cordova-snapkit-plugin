@@ -18,13 +18,13 @@ import SAKSDK.SAKMobileAd;
     
     @objc(initializeAdKit:)
     func initializeAdKit(command: CDVInvokedUrlCommand) {
-        
-        print("initializeAdKit!");
-        
+                
+        let snapKitAppId: String = command.arguments[0] as! String;
+        print("initializeAdKit id = " +  snapKitAppId);
+
         DispatchQueue.global(qos: .background).async {
             let config = SAKRegisterRequestConfigurationBuilder();
-            config.withSnapKitAppId("59c024eb-4726-479b-b48c-f279af6d1776");
-            config.withAppStoreAppId(1559729141);
+            config.withSnapKitAppId(snapKitAppId);
             
             let builtConfig = config.build()!;
             let shared = SAKMobileAd.shared();
@@ -92,14 +92,16 @@ import SAKSDK.SAKMobileAd;
     
     @objc(playAd:)
     func playAd(command: CDVInvokedUrlCommand) {
-        print("Playing ad... last loaded: " + lastLoadedAd);
         
-        if(lastLoadedAd == "interstitial")
+        let adSlotId: String = command.arguments[0] as! String;
+        print("Playing ad... last loaded: " + lastLoadedAd + " , requested ad id=" + adSlotId);
+
+        if(lastInterstitialSlotId == adSlotId)
         {
             interstitial?.present(fromRootViewController: self.viewController, dismissTransition: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: 0, height: 0)));
-            
         }
-        else if(lastLoadedAd == "rewarded")
+
+        if(lastRewardedSlotId == adSlotId)
         {
             rewarded?.present(fromRootViewController: self.viewController, dismissTransition: CGRect(origin: CGPoint(x: 0, y: 0), size: CGSize(width: 0, height: 0)))
         }
@@ -107,7 +109,6 @@ import SAKSDK.SAKMobileAd;
         let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "true");
         self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
     }
-    
     
     /************ AD EVENTS ****************/
     

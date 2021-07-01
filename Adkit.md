@@ -7,6 +7,26 @@ None.
 
 ## iOS configuration
 
+Add the following to your config.xml between the iOS platform tags
+
+```
+<config-file parent="NSAppTransportSecurity" target="*-Info.plist">
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true />
+    </dict>
+</config-file>
+<config-file parent="SKAdNetworkItems" target="*-Info.plist">
+    <array>
+        <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>424m5254lk.skadnetwork</string>
+        </dict>
+    </array>
+</config-file>
+```
+
+Note the native iOS version allows configuration and targeting of ads. This is not yet exposed in this plugin, but the plugin can be forked and additional configuration can be added to AdKit.swift located in cordova-snapkit-plugin/src/ios/
 
 ## Using Adkit
 
@@ -78,6 +98,8 @@ If an ad is loaded with the passed in slotId, you play the ad by calling:
 ```
 window.AdKit.playAd(slotId)
 ```
+
+If you request more than one ad of a certain type on iOS, the one you loaded most recently will play.
 
 ## Events
 
