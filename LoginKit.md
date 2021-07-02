@@ -78,10 +78,51 @@ Additionally you may need to enable AndroidX to be able to build
 <preference name="AndroidXEnabled" value="true" />
 ```
 
-And finally 
-
 
  ## iOS configuration
+
+To use LoginKit we need to modify info.plist. Add the following to your config.xml between the ```<platform name="iOS">``` tags and replace placeholders with your OAuth2 clientID, redirect URL and app bundle ID which can all be found in Snapkit's developer portal.
+
+```
+<config-file parent="CFBundleURLTypes" target="*-Info.plist">
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+            <key>CFBundleURLName</key>
+            <string>your app bundle ID</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>Your redirect url scheme</string> //If your redirect URL is myapp://snap-kit/oath2, this field should be my app<
+            </array>
+        </dict>
+    </array>
+</config-file>
+<config-file parent="SCSDKClientId" target="*-Info.plist">
+    <string>Your OAuth2 clientId</string>
+</config-file>
+<config-file parent="SCSDKRedirectUrl" target="*-Info.plist">
+    <string>Your redirect URL</string>
+</config-file>
+<config-file parent="SCSDKScopes" target="*-Info.plist">
+    <array>
+        <string>https://auth.snapchat.com/oauth2/api/user.display_name</string>
+        <string>https://auth.snapchat.com/oauth2/api/user.external_id</string>
+        <string>https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar</string>
+    </array>
+</config-file>
+<config-file parent="LSApplicationQueriesSchemes" target="*-Info.plist">
+    <array>
+        <string>snapchat</string>
+    </array>
+</config-file>
+<config-file parent="NSAppTransportSecurity" target="*-Info.plist">
+    <dict>
+        <key>NSAllowsArbitraryLoads</key>
+        <true />
+    </dict>
+</config-file>
+```
 
  ## Using LoginKit
 

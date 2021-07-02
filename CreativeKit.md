@@ -42,6 +42,22 @@ And this line in your ```<platform name="android">``` tag to ensure the file is 
 <resource-file src="res/xml/file_paths.xml" target="app/src/main/res/xml/file_paths.xml" />
 ```
 
+## iOS configuration
+
+Add the following in your config.xml between the iOS platform tags and input your OAuth2 clientID from Snapkit's developer portal.
+
+```
+<config-file parent="SCSDKClientId" target="*-Info.plist">
+    <string>Your OAuth2 clientID</string>
+</config-file>
+
+<config-file parent="LSApplicationQueriesSchemes" target="*-Info.plist">
+    <array>
+        <string>snapchat</string>
+    </array>
+</config-file>
+```
+
  ## Using CreativeKit
 
  CreativeKit can be accessed on ```window.CreativeKit```, and provides a share method that takes a sticker object. 

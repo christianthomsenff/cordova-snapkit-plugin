@@ -22,25 +22,8 @@ import SCSDKCreativeKit
                 print("Something went wrong!");
                 return;
         }
-
-        print("Sharing with image");
-        //et concatDataUrl: String = "data:image/png;base64," + dataUrl;
-        
-        /*
-        let decodedData = NSData(base64Encoded: dataUrl, options:[])
-        //let decodedData = NSData(contentsOf: dataUrl);
-        if let data = decodedData {
-
-            
-            let image = UIImage(data: data as Data)!;
-            let rect = CGRect(x: 0, y: 0, width: width, height: height);
-            UIGraphicsBeginImageContextWithOptions(CGSize(width: width, height: height), false, 1.0);
-            image.draw(in: rect);
-            let resizedImage = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();*/
             
             let sticker = SCSDKSnapSticker(stickerUrl: URL(string: dataUrl)!, isAnimated: false);
-            //let sticker = SCSDKSnapSticker(stickerImage: resizedImage!);
             sticker.posX = posX;
             sticker.posY = posY;
             sticker.rotation = rotation;
