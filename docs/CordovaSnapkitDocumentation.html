@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>1&period; Installation</title>
+        <style>
+</style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css" integrity="sha384-yFRtMMDnQtDRO8rLpMIKrtPCD5jdktao2TV19YiZYWMDkUR5GQZR/NOVTdquEx1j" crossorigin="anonymous">
+<link href="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.css" rel="stylesheet" type="text/css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item { list-style-type: none; } .task-list-item-checkbox { margin-left: -20px; vertical-align: middle; }
+</style>
+        
+        <script src="https://cdn.jsdelivr.net/npm/katex-copytex@latest/dist/katex-copytex.min.js"></script>
+        
+    </head>
+    <body class="vscode-body vscode-light">
+        <h1>Documentation for Cordova Snapkit plugin</h1>
+<p>This plugin allows you to integrate Snapchat features into your HTML5 app. It uses the native implementations of
+Loginkit, CreativeKit, Adkit (see <a href="https://kit.snapchat.com/docs">https://kit.snapchat.com/docs</a>) and provides a way for apps exported with Cordova to interact with them.</p>
+<p>An example Playcanvas project that uses all 3 kits can be found at: <a href="https://playcanvas.com/project/771129/overview/snapkitplugin-demo">https://playcanvas.com/project/771129/overview/snapkitplugin-demo</a></p>
+<p>Github for the cordova project:</p>
+<h3>Table of contents</h3>
+<ul>
+<li><a href="#1-installation">1. Installation</a></li>
+<li><a href="#11-snapkit-developer-portal">1.1 Snapkit Developer Portal</a></li>
+<li><a href="#2-loginkit">2 LoginKit</a>
+<ul>
+<li><a href="#21-android-congfiuration">2.1 Android congfiuration</a></li>
+<li><a href="#ios-22-configuration">iOS 2.2 configuration</a></li>
+<li><a href="#23-using-loginkit">2.3 Using LoginKit</a>
+<ul>
+<li><a href="#231-login">2.3.1 Login</a></li>
+<li><a href="#232-logout">2.3.2 Logout</a></li>
+<li><a href="#234-checking-logged-in-status">2.3.4 Checking logged in status</a></li>
+<li><a href="#235-getting-userdata">2.3.5 Getting userdata</a></li>
+</ul>
+</li>
+<li><a href="#24-problems">2.4 Problems?</a></li>
+</ul>
+</li>
+<li><a href="#3-creative-kit">3 Creative Kit</a>
+<ul>
+<li><a href="#31-android-congfiuration">3.1 Android congfiuration</a></li>
+<li><a href="#32-ios-configuration">3.2 iOS configuration</a></li>
+<li><a href="#33-using-creativekit">3.3 Using CreativeKit</a></li>
+</ul>
+</li>
+<li><a href="#4-adkit">4 Adkit</a>
+<ul>
+<li><a href="#41-android-configuration">4.1 Android configuration</a></li>
+<li><a href="#42-ios-configuration">4.2 iOS configuration</a></li>
+<li><a href="#43-using-adkit">4.3 Using Adkit</a>
+<ul>
+<li><a href="#431-loading-interstitialsrewarded-ads">4.3.1 Loading interstitials/rewarded ads</a></li>
+<li><a href="#432-playing-ads">4.3.2 Playing ads</a></li>
+</ul>
+</li>
+<li><a href="#433-events">4.3.3 Events</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="1-installation">1. Installation</h1>
+<p>In your cordova project run:</p>
+<pre><code><code><div>cordova plugin add https://github.com/christianthomsenff/cordova-snapkit-plugin
+</div></code></code></pre>
+<h1 id="11-snapkit-developer-portal">1.1 Snapkit Developer Portal</h1>
+<p>To use Snapkit you need to create an app in the <a href="https://kit.snapchat.com/manage/">Snapkit developer portal</a>.</p>
+<p>Follow the the documentation on the developer portal <a href="https://kit.snapchat.com/docs/developer-portal">https://kit.snapchat.com/docs/developer-portal</a> to setup your app.</p>
+<h1 id="2-loginkit">2 LoginKit</h1>
+<p>Make sure you have toggled LoginKit on in the Snapkit developer portal.
+You'll also need to whitelist a Snapchat user you can use for testing, add a bundle ID and a redirect URL.</p>
+<h2 id="21-android-congfiuration">2.1 Android congfiuration</h2>
+<p>LoginKit requires some changes to the AndroidManifest. Paste the following in your app's config.xml between the <code>&lt;platform name=&quot;android&quot;&gt;</code> start and end tag. Input the values for client id, redirect url and scheme, host and path from the Snapkit developer portal.</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;/manifest/application&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;AndroidManifest.xml&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.snapchat.kit.sdk.clientId&quot;</span> <span class="hljs-attr">android:value</span>=<span class="hljs-string">&quot;your app’s OAuth2 client id&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.snapchat.kit.sdk.redirectUrl&quot;</span> <span class="hljs-attr">android:value</span>=<span class="hljs-string">&quot;the url that will handle login completion&quot;</span> /&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.snapchat.kit.sdk.scopes&quot;</span> <span class="hljs-attr">android:resource</span>=<span class="hljs-string">&quot;@array/snap_connect_scopes&quot;</span> /&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-name">activity</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.snapchat.kit.sdk.SnapKitActivity&quot;</span> <span class="hljs-attr">android:launchMode</span>=<span class="hljs-string">&quot;singleTask&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.action.VIEW&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.DEFAULT&quot;</span> /&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.BROWSABLE&quot;</span> /&gt;</span>
+
+            <span class="hljs-comment">&lt;!--
+                Enter the parts of your redirect url below
+                e.g., if your redirect url is myapp://snap-kit/oauth2
+                    android:scheme=&quot;myapp&quot;
+                    android:host=&quot;snap-kit&quot;
+                    android:path=&quot;/oauth2&quot;   (make sure to include /)
+            !--&gt;</span>
+
+            <span class="hljs-tag">&lt;<span class="hljs-name">data</span>
+                <span class="hljs-attr">android:scheme</span>=<span class="hljs-string">&quot;the scheme of your redirect url&quot;</span>
+                <span class="hljs-attr">android:host</span>=<span class="hljs-string">&quot;the host of your redirect url&quot;</span>
+                <span class="hljs-attr">android:path</span>=<span class="hljs-string">&quot;the path of your redirect url&quot;</span>
+                /&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">activity</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+</div></code></pre>
+<p>Now create a file called arrays.xml and paste in:</p>
+<pre><code class="language-xml"><div><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">resources</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">string-array</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;snap_connect_scopes&quot;</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>https://auth.snapchat.com/oauth2/api/user.display_name<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">item</span>&gt;</span>https://auth.snapchat.com/oauth2/api/user.external_id<span class="hljs-tag">&lt;/<span class="hljs-name">item</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">string-array</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">resources</span>&gt;</span>
+</div></code></pre>
+<p>Save it at the path res/values/arrays.xml at the root of your project.
+This defines which scopes LoginKit have access to. Here both the display name, external id and bitmoji.</p>
+<p>And add a line after the <code>&lt;/config-file&gt;</code> tag that copies this file to the correct location when building.</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">resource-file</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;res/values/arrays.xml&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;app/src/main/res/values/arrays.xml&quot;</span> /&gt;</span>
+</div></code></pre>
+<p>More info on scopes and Android configuration can be found at: <a href="https://kit.snapchat.com/docs/login-kit-android">https://kit.snapchat.com/docs/login-kit-android</a></p>
+<p>Additionally you may need to enable AndroidX to be able to build</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">preference</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;AndroidXEnabled&quot;</span> <span class="hljs-attr">value</span>=<span class="hljs-string">&quot;true&quot;</span> /&gt;</span>
+</div></code></pre>
+<h2 id="ios-22-configuration">iOS 2.2 configuration</h2>
+<p>To use LoginKit we need to modify info.plist. Add the following to your config.xml between the <code>&lt;platform name=&quot;iOS&quot;&gt;</code> tags and replace placeholders with your OAuth2 clientID, redirect URL and app bundle ID which can all be found in Snapkit's developer portal.</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;CFBundleURLTypes&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">array</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">dict</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">key</span>&gt;</span>CFBundleTypeRole<span class="hljs-tag">&lt;/<span class="hljs-name">key</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>Editor<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">key</span>&gt;</span>CFBundleURLName<span class="hljs-tag">&lt;/<span class="hljs-name">key</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>your app bundle ID<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">key</span>&gt;</span>CFBundleURLSchemes<span class="hljs-tag">&lt;/<span class="hljs-name">key</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">array</span>&gt;</span>
+                <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>Your redirect url scheme<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span> //If your redirect URL is myapp://snap-kit/oath2, this field should be my app<span class="hljs-tag">&lt;
+            &lt;/<span class="hljs-attr">array</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">dict</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">array</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;SCSDKClientId&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>Your OAuth2 clientId<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;SCSDKRedirectUrl&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>Your redirect URL<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;SCSDKScopes&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">array</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>https://auth.snapchat.com/oauth2/api/user.display_name<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>https://auth.snapchat.com/oauth2/api/user.external_id<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">array</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;LSApplicationQueriesSchemes&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">array</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>snapchat<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">array</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;NSAppTransportSecurity&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dict</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">key</span>&gt;</span>NSAllowsArbitraryLoads<span class="hljs-tag">&lt;/<span class="hljs-name">key</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">true</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dict</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+</div></code></pre>
+<h2 id="23-using-loginkit">2.3 Using LoginKit</h2>
+<p>Loginkit is ready for use after Cordova's deviceready event fires. Note you can subscribe to the event at any time. If you subscribe after the event has fired  the callback function will be called immediately.
+The plugin can be accessed through the window object: <code>window.LoginKit</code></p>
+<pre><code class="language-js"><div>LoginKitPlugin.prototype.initialize = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">&#x27;deviceready&#x27;</span>, <span class="hljs-built_in">this</span>.onDeviceReady.bind(<span class="hljs-built_in">this</span>));
+};
+
+LoginKitPlugin.prototype.onDeviceReady = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span>(<span class="hljs-built_in">window</span>.LoginKit) {
+        <span class="hljs-comment">//LoginKit is available</span>
+    } <span class="hljs-keyword">else</span> {
+        <span class="hljs-comment">//Could not find loginkit</span>
+    }
+};
+</div></code></pre>
+<h3 id="231-login">2.3.1 Login</h3>
+<p>To initiate a login simply call the corresponding methods on window.Loginkit.</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">window</span>.LoginKit.login();
+</div></code></pre>
+<p>For updates on login success or failure, LoginKit provides two events you can subscribe to:</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">window</span>.LoginKit.onLoginSucceeded = <span class="hljs-built_in">this</span>.onLoginSucceeded.bind(<span class="hljs-built_in">this</span>);
+<span class="hljs-built_in">window</span>.LoginKit.onLoginFailed = <span class="hljs-built_in">this</span>.onLoginFailed.bind(<span class="hljs-built_in">this</span>);
+
+
+LoginKitPlugin.prototype.onLoginSucceeded = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-comment">//Player is now logged in</span>
+};
+
+LoginKitPlugin.prototype.onLoginFailed = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Login failed&quot;</span>, err);
+};
+</div></code></pre>
+<h3 id="232-logout">2.3.2 Logout</h3>
+<p>Similarly to logout a user simply call:</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">window</span>.LoginKit.logout();
+</div></code></pre>
+<p>And subscribe to the onLogout event:</p>
+<pre><code><code><div>window.LoginKit.onLogout = this.onLogout.bind(this);
+
+LoginKitPlugin.prototype.onLogout = function() {
+    //Player is now logged out
+};
+</div></code></code></pre>
+<h3 id="234-checking-logged-in-status">2.3.4 Checking logged in status</h3>
+<p>To check if a user is currently logged in call isLoggedIn. It's a promise that resolves to either &quot;true&quot; or &quot;false&quot;.</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">window</span>.LoginKit.isLoggedIn().then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
+    <span class="hljs-keyword">if</span>(response == <span class="hljs-string">&quot;true&quot;</span>)
+    {
+        <span class="hljs-comment">//Player is logged in</span>
+    }
+    
+    <span class="hljs-keyword">if</span>(response == <span class="hljs-string">&quot;false&quot;</span>)
+    {
+        <span class="hljs-comment">//Player is not logged in</span>
+    }
+});
+</div></code></pre>
+<h3 id="235-getting-userdata">2.3.5 Getting userdata</h3>
+<p>When a user is logged in we can access his Snapchat display name, 2D bitmoji and external ID. This is done by passing in a query string to the method fetchUserData. A query string for bitmoji, displayname and externalID would look like:</p>
+<pre><code class="language-js"><div><span class="hljs-keyword">var</span> queryString = <span class="hljs-string">&quot;{me{bitmoji{avatar},displayName,externalId}}&quot;</span>
+</div></code></pre>
+<p>Passing it to the fetchUserData returns a response object that contains the requested fields.</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">window</span>.LoginKit.fetchUserData(queryString).then(<span class="hljs-function"><span class="hljs-params">response</span> =&gt;</span> {
+    <span class="hljs-comment">//response.displayname</span>
+    <span class="hljs-comment">//response.externalId</span>
+    <span class="hljs-comment">//response.bitmoji</span>
+});
+</div></code></pre>
+<p>Make sure to take into account that not all Snapchat users have bitmojis. If they do, the bitmoji field will return a base64 string. You'll most likely need to convert it to a Playcanvas texture to be able to use it. Example:</p>
+<pre><code class="language-js"><div><span class="hljs-keyword">var</span> tex = <span class="hljs-keyword">new</span> pc.Texture(<span class="hljs-built_in">this</span>.app.graphicsDevice, {});
+<span class="hljs-keyword">var</span> img = <span class="hljs-built_in">document</span>.createElement(<span class="hljs-string">&#x27;img&#x27;</span>);
+img.src = response.bitmoji;
+img.crossOrigin = <span class="hljs-string">&#x27;anonymous&#x27;</span>;
+img.onload = <span class="hljs-function">(<span class="hljs-params">evt</span>) =&gt;</span> {
+    tex.setSource(img); 
+    <span class="hljs-built_in">this</span>.bitmoji.element.texture = tex;
+};
+</div></code></pre>
+<h2 id="24-problems">2.4 Problems?</h2>
+<p>While implementing Loginkit you might get to a point where returning from Snapchat shows an error &quot;Something went wrong!&quot;. This is a catch all error that indicates a mismatch between the IDs, bundle IDs, user whitelisting or redirect URIs in your app and in the Snapkit portal. Make sure to double check that your app is setup correctly in Snapkit and all values match with your app.</p>
+<h1 id="3-creative-kit">3 Creative Kit</h1>
+<p>Currently this plugin only supports sending overlay stickers.
+Note that stickers must be PNGs 1 MB or smaller.</p>
+<h2 id="31-android-congfiuration">3.1 Android congfiuration</h2>
+<p>Paste the following in your app's config.xml between the <code>&lt;platform name=&quot;android&quot;&gt;</code> and add your app's Oauth2 client ID from Snapkit's developer portal.</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;/manifest/application&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;AndroidManifest.xml&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.snapchat.kit.sdk.clientId&quot;</span> <span class="hljs-attr">android:value</span>=<span class="hljs-string">&quot;your app’s OAuth2 client id&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">config-file</span>&gt;</span>
+</div></code></pre>
+<p>Add access to FileProvider by adding the following in the <code>&lt;config-file ...&gt;</code> tag:</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">provider</span> <span class="hljs-attr">android:authorities</span>=<span class="hljs-string">&quot;${applicationId}.fileprovider&quot;</span> <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> <span class="hljs-attr">android:grantUriPermissions</span>=<span class="hljs-string">&quot;true&quot;</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;androidx.core.content.FileProvider&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.support.FILE_PROVIDER_PATHS&quot;</span> <span class="hljs-attr">android:resource</span>=<span class="hljs-string">&quot;@xml/file_paths&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">provider</span>&gt;</span>
+</div></code></pre>
+<p>Images have to be saved to a temporary location before they can be shared.
+Create an xml file and save it at the path res/xml/file_paths.xml with the following</p>
+<pre><code class="language-xml"><div><span class="hljs-meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">paths</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">cache-path</span> <span class="hljs-attr">name</span>=<span class="hljs-string">&quot;tmp&quot;</span> <span class="hljs-attr">path</span>=<span class="hljs-string">&quot;/&quot;</span> /&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">paths</span>&gt;</span>
+</div></code></pre>
+<p>And this line in your <code>&lt;platform name=&quot;android&quot;&gt;</code> tag to ensure the file is copied over when building.</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">resource-file</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;res/xml/file_paths.xml&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;app/src/main/res/xml/file_paths.xml&quot;</span> /&gt;</span>
+</div></code></pre>
+<h2 id="32-ios-configuration">3.2 iOS configuration</h2>
+<p>Add the following in your config.xml between the iOS platform tags and input your OAuth2 clientID from Snapkit's developer portal.</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;SCSDKClientId&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>Your OAuth2 clientID<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+
+<span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;LSApplicationQueriesSchemes&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">array</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>snapchat<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">array</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+</div></code></pre>
+<h2 id="33-using-creativekit">3.3 Using CreativeKit</h2>
+<p>CreativeKit can be accessed on <code>window.CreativeKit</code>, and provides a share method that takes a sticker object.
+The sticker object allows you to specify rotation, size, placement and the optional caption and attachmentUrl fields.
+Clicking the sticker will take the user to the attachmentUrl if specified.
+The dataUrl field expects an image encoded as a base64 string.
+Example:</p>
+<pre><code class="language-js"><div><span class="hljs-keyword">var</span> sticker = {
+    <span class="hljs-attr">width</span>: <span class="hljs-number">500</span>,
+    <span class="hljs-attr">height</span>: <span class="hljs-number">500</span>,
+    <span class="hljs-attr">centerX</span>: <span class="hljs-number">0.5</span>,
+    <span class="hljs-attr">centerY</span>: <span class="hljs-number">0.5</span>,
+    <span class="hljs-attr">rotation</span>: <span class="hljs-number">300</span>,
+    <span class="hljs-attr">dataUrl</span>: <span class="hljs-string">&quot;data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==&quot;</span>,
+    <span class="hljs-attr">caption</span>: <span class="hljs-string">&quot;Cool caption&quot;</span> <span class="hljs-comment">//Optional,</span>
+    <span class="hljs-attr">attachmentUrl</span>: <span class="hljs-string">&quot;https://snap.com&quot;</span> <span class="hljs-comment">//Optional on Android</span>
+};
+
+<span class="hljs-built_in">window</span>.CreativeKit.share(sticker).then(<span class="hljs-function">() =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Share OK&quot;</span>);
+}).catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> {
+    <span class="hljs-built_in">console</span>.log(err);
+});
+</div></code></pre>
+<p>Note as of writing the sticker won't show up on iOS without an attachmentUrl!</p>
+<h1 id="4-adkit">4 Adkit</h1>
+<p>As of writing Ad Kit is not available to all developers, reach out to your partner engineer on how to get whitelisted or apply for access on <a href="https://snapkit.com/ad-kit">https://snapkit.com/ad-kit</a>.
+Make sure to read the first section on <a href="https://kit.snapchat.com/docs/ad-kit-android">https://kit.snapchat.com/docs/ad-kit-android</a> as it provides important information on how to properly test AdKit. Currently this requires using a US-based VPN.</p>
+<h2 id="41-android-configuration">4.1 Android configuration</h2>
+<p>None.</p>
+<h2 id="42-ios-configuration">4.2 iOS configuration</h2>
+<p>Add the following to your config.xml between the iOS platform tags</p>
+<pre><code class="language-xml"><div><span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;NSAppTransportSecurity&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">dict</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">key</span>&gt;</span>NSAllowsArbitraryLoads<span class="hljs-tag">&lt;/<span class="hljs-name">key</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">true</span> /&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">dict</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+<span class="hljs-tag">&lt;<span class="hljs-name">config-file</span> <span class="hljs-attr">parent</span>=<span class="hljs-string">&quot;SKAdNetworkItems&quot;</span> <span class="hljs-attr">target</span>=<span class="hljs-string">&quot;*-Info.plist&quot;</span>&gt;</span>
+    <span class="hljs-tag">&lt;<span class="hljs-name">array</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-name">dict</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">key</span>&gt;</span>SKAdNetworkIdentifier<span class="hljs-tag">&lt;/<span class="hljs-name">key</span>&gt;</span>
+            <span class="hljs-tag">&lt;<span class="hljs-name">string</span>&gt;</span>424m5254lk.skadnetwork<span class="hljs-tag">&lt;/<span class="hljs-name">string</span>&gt;</span>
+        <span class="hljs-tag">&lt;/<span class="hljs-name">dict</span>&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-name">array</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">config-file</span>&gt;</span>
+</div></code></pre>
+<p>Note the native iOS version allows configuration and targeting of ads. This is not yet exposed in this plugin, but the plugin can be forked and additional configuration can be added to AdKit.swift located in cordova-snapkit-plugin/src/ios/</p>
+<h2 id="43-using-adkit">4.3 Using Adkit</h2>
+<p>After the deviceready event you can access AdKit on the window object. The first thing you'll want to do is initialize by calling window.AdKit.init(appId). The appId in this case is the &quot;Snap Kit App ID&quot; that can be found by navigating to your app on the Snapkit developer portal.</p>
+<pre><code class="language-js"><div>AdKitPlugin.prototype.initialize = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">document</span>.addEventListener(<span class="hljs-string">&#x27;deviceready&#x27;</span>, <span class="hljs-built_in">this</span>.onDeviceReady.bind(<span class="hljs-built_in">this</span>));
+};
+
+AdKitPlugin.prototype.onDeviceReady = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-keyword">if</span>(<span class="hljs-built_in">window</span>.AdKit)
+    {
+        <span class="hljs-comment">//Found AdKit, initialize...</span>
+        <span class="hljs-built_in">window</span>.AdKit.onSnapAdInitSucceeded = <span class="hljs-built_in">this</span>.onSnapAdInitSucceeded.bind(<span class="hljs-built_in">this</span>);
+        <span class="hljs-built_in">window</span>.AdKit.onSnapAdInitFailed = <span class="hljs-built_in">this</span>.onSnapAdInitFailed.bind(<span class="hljs-built_in">this</span>);
+
+        <span class="hljs-keyword">var</span> snapKitAppId = <span class="hljs-string">&quot;1abc2345-1234-1234-1234-1abc2345abc&quot;</span>;
+        <span class="hljs-built_in">window</span>.AdKit.init(snapKitAppId);
+    }
+}
+
+AdKitPlugin.prototype.onSnapAdInitSucceeded = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;AdKit init success!&quot;</span>);
+};
+
+AdKitPlugin.prototype.onSnapAdInitFailed = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">err</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;AdKit init failed!&quot;</span>, err);
+};
+</div></code></pre>
+<h3 id="431-loading-interstitialsrewarded-ads">4.3.1 Loading interstitials/rewarded ads</h3>
+<p>To request an interstitial:</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">window</span>.AdKit.loadInterstitial(slotId);
+</div></code></pre>
+<p>This loads an interstitial into memory which can be played anytime. To load a rewarded ad use the corresponding</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">window</span>.AdKit.loadRewarded(slotId);
+</div></code></pre>
+<p>You can load several ads into memory and play them one by one. For example, you can load an interstitial ad with various slotIDs, then load a few rewarded ads; then, you'll be able to play interstitial ads or rewarded ads as you please, as long as the requested slotID has an ad loaded in memory.</p>
+<p>You can listen to the success or failure of ad loading:</p>
+<pre><code class="language-js"><div>....
+window.AdKit.onSnapAdLoadSucceeded = <span class="hljs-built_in">this</span>.onSnapAdLoadSucceeded.bind(<span class="hljs-built_in">this</span>);
+<span class="hljs-built_in">window</span>.AdKit.onSnapAdLoadFailed = <span class="hljs-built_in">this</span>.onSnapAdLoadFailed.bind(<span class="hljs-built_in">this</span>);
+...
+
+AdKitPlugin.prototype.onSnapAdLoadSucceeded = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">slotId</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Loaded ad (&quot;</span>  + slotId + <span class="hljs-string">&quot;)&quot;</span>);
+};
+
+AdKitPlugin.prototype.onSnapAdLoadFailed = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">slotId</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;Failed to load ad (&quot;</span> + slotId + <span class="hljs-string">&quot;)&quot;</span>);
+};
+</div></code></pre>
+<h3 id="432-playing-ads">4.3.2 Playing ads</h3>
+<p>If an ad is loaded with the passed in slotId, you play the ad by calling:</p>
+<pre><code class="language-js"><div><span class="hljs-built_in">window</span>.AdKit.playAd(slotId)
+</div></code></pre>
+<p>If you request more than one ad of a certain type on iOS, the one you loaded most recently will play.</p>
+<h2 id="433-events">4.3.3 Events</h2>
+<p>In addition to events previously mentioned (init success/fail and loaded ad sucess/fail), AdKit comes with these events:</p>
+<pre><code class="language-js"><div>...
+
+window.AdKit.onSnapAdRewardedEarned = <span class="hljs-built_in">this</span>.onSnapAdRewardedEarned.bind(<span class="hljs-built_in">this</span>);
+<span class="hljs-built_in">window</span>.AdKit.onSnapAdVisible = <span class="hljs-built_in">this</span>.onSnapAdVisible.bind(<span class="hljs-built_in">this</span>);
+<span class="hljs-built_in">window</span>.AdKit.onSnapAdClicked = <span class="hljs-built_in">this</span>.onSnapAdClicked.bind(<span class="hljs-built_in">this</span>);
+<span class="hljs-built_in">window</span>.AdKit.onSnapAdDismissed = <span class="hljs-built_in">this</span>.onSnapAdDismissed.bind(<span class="hljs-built_in">this</span>);
+<span class="hljs-built_in">window</span>.AdKit.onSnapAdImpressionHappened = <span class="hljs-built_in">this</span>.onSnapAdImpressionHappened.bind(<span class="hljs-built_in">this</span>);
+
+...
+
+AdKitPlugin.prototype.onSnapAdRewardedEarned = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">slotId</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;onSnapAdRewardedEarned&quot;</span>, slotId);
+};
+
+AdKitPlugin.prototype.onSnapAdVisible = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">slotId</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;onSnapAdVisible&quot;</span>, slotId);
+};
+
+AdKitPlugin.prototype.onSnapAdClicked = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">slotId</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;onSnapAdClicked&quot;</span>, slotId);
+};
+
+AdKitPlugin.prototype.onSnapAdDismissed = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">slotId</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;onSnapAdDismissed&quot;</span>, slotId);
+};
+
+AdKitPlugin.prototype.onSnapAdImpressionHappened = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">slotId</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;onSnapAdImpressionHappened&quot;</span>, slotId);
+};
+
+</div></code></pre>
+
+    </body>
+    </html>
