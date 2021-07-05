@@ -31,6 +31,7 @@ Github for the cordova project: https://github.com/christianthomsenff/playcanvas
     - [4.3.1 Loading interstitials/rewarded ads](#431-loading-interstitialsrewarded-ads)
     - [4.3.2 Playing ads](#432-playing-ads)
   - [4.3.3 Events](#433-events)
+  - [4.4 Problems](#44-problems)
 
 # 1. Installation
 
@@ -93,13 +94,12 @@ Now create a file called arrays.xml and paste in:
     <string-array name="snap_connect_scopes">
         <item>https://auth.snapchat.com/oauth2/api/user.bitmoji.avatar</item>
         <item>https://auth.snapchat.com/oauth2/api/user.display_name</item>
-        <item>https://auth.snapchat.com/oauth2/api/user.external_id</item>
     </string-array>
 </resources>
 ```
 
 Save it at the path res/values/arrays.xml at the root of your project. 
-This defines which scopes LoginKit have access to. Here both the display name, external id and bitmoji.
+This defines which scopes LoginKit have access to. Here both the display name and bitmoji.
 
 And add a line after the ```</config-file>``` tag that copies this file to the correct location when building.
 
@@ -113,6 +113,50 @@ Additionally you may need to enable AndroidX to be able to build
 
 ```xml
 <preference name="AndroidXEnabled" value="true" />
+```
+
+Finally in the widget tag add
+
+```xml
+<xmlns:android="http://schemas.android.com/apk/res/android">
+```
+
+Your config.xml should look somthing like:
+
+```xml
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.fundayfactory.snapkitdemo" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Snapkit Demo</name>
+    <description>
+    </description>
+    <content src="index.html" />
+    <access origin="*" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <platform name="android">
+        <config-file parent="/manifest/application" target="AndroidManifest.xml">
+            <meta-data android:name="com.snapchat.kit.sdk.clientId" android:value="b68e354e-05d9-46d7-85a9-032202b8511c" />
+            <meta-data android:name="com.snapchat.kit.sdk.redirectUrl" android:value="snapkitdemo://snap-kit/oauth2" />
+            <meta-data android:name="com.snapchat.kit.sdk.scopes" android:resource="@array/snap_connect_scopes" />
+
+            <activity android:name="com.snapchat.kit.sdk.SnapKitActivity" android:launchMode="singleTask">
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
+                    <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.BROWSABLE" />
+                    <data
+                        android:scheme="snapkitdemo"
+                        android:host="snap-kit"
+                        android:path="/oauth2"
+                        />
+                </intent-filter>
+            </activity>
+        </config-file>
+
+        <preference name="AndroidXEnabled" value="true" />
+        <resource-file src="res/values/arrays.xml" target="app/src/main/res/values/arrays.xml" />
+    </platform>
+</widget>
 ```
 
  ## iOS 2.2 configuration
@@ -190,9 +234,10 @@ window.LoginKit.login();
 For updates on login success or failure, LoginKit provides two events you can subscribe to:
 
 ```js
+...
 window.LoginKit.onLoginSucceeded = this.onLoginSucceeded.bind(this);
 window.LoginKit.onLoginFailed = this.onLoginFailed.bind(this);
-
+...
 
 LoginKitPlugin.prototype.onLoginSucceeded = function() {
     //Player is now logged in
@@ -214,7 +259,7 @@ window.LoginKit.logout();
 
 And subscribe to the onLogout event:
 
-```
+```js
 window.LoginKit.onLogout = this.onLogout.bind(this);
 
 LoginKitPlugin.prototype.onLogout = function() {
@@ -248,7 +293,7 @@ When a user is logged in we can access his Snapchat display name, 2D bitmoji and
 var queryString = "{me{bitmoji{avatar},displayName,externalId}}"
 ```
 
-Passing it to the fetchUserData returns a response object that contains the requested fields.
+Passing it to the fetchUserData function returns a response object that contains the requested fields:
 
 ```js
 window.LoginKit.fetchUserData(queryString).then(response => {
@@ -431,7 +476,9 @@ To request an interstitial:
 window.AdKit.loadInterstitial(slotId);
 ```
 
-This loads an interstitial into memory which can be played anytime. To load a rewarded ad use the corresponding
+This loads an interstitial into memory which can be played anytime. 
+
+To load a rewarded ad use the corresponding
 
 ```js
 window.AdKit.loadRewarded(slotId);
@@ -464,7 +511,7 @@ If an ad is loaded with the passed in slotId, you play the ad by calling:
 window.AdKit.playAd(slotId)
 ```
 
-If you request more than one ad of a certain type on iOS, the one you loaded most recently will play.
+If you request more than one ad of the same type on iOS, the one loaded most recent will play.
 
 ## 4.3.3 Events
 
@@ -502,3 +549,8 @@ AdKitPlugin.prototype.onSnapAdImpressionHappened = function(slotId) {
 };
 
 ```
+
+## 4.4 Problems
+
+Initializing AdKit can be tricky due to the strict testing requirements. You must be on an US based VPN and will be banned from initialization for 24 hours otherwise.
+After a failed AdKit initialization make sure to completely uninstall the app and reset your IDFA (only possible on Android) before trying again or you'll get a fail again due to the 24h lockout.
