@@ -1,4 +1,5 @@
 import SCSDKLoginKit
+import SCSDKSnapKit
 import WebKit
 
 @objc(LoginKit) class LoginKit : CDVPlugin 
@@ -7,7 +8,14 @@ import WebKit
     override func pluginInitialize() {
         super.pluginInitialize();
     }
-    
+
+    @objc(initSDK:)
+    func initSDK(command: CDVInvokedUrlCommand) {
+        SCSDKSnapKit.initSDK();
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "OK");
+        self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+    }
+
     @objc(login:)
     func login(command: CDVInvokedUrlCommand) {
         SCSDKLoginClient.login(from: self.viewController!) { (success: Bool, error: Error?) in

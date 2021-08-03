@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.snapchat.kit.sdk.SnapKit;
 import com.snapchat.kit.sdk.SnapLogin;
 import com.snapchat.kit.sdk.core.controller.LoginStateController;
 import com.snapchat.kit.sdk.login.models.MeData;
@@ -70,6 +71,11 @@ public class LoginKit extends CordovaPlugin {
             return true;
         }
 
+        if(action.equals("initSDK")) {
+            this.InitSDK(callbackContext);
+            return true;
+        }
+
         if(action.equals("logout")) {
             this.Logout(callbackContext);
             return true;
@@ -95,6 +101,16 @@ public class LoginKit extends CordovaPlugin {
                 webView.loadUrl("javascript:" + jsString);
             }
         });
+    }
+
+    private void InitSDK(CallbackContext callbackContext) {
+        try {
+            Context context = this.cordova.getActivity().getApplicationContext();
+            SnapKit.initSDK(context);
+            callbackContext.success();
+        } catch(Error err) {
+            callbackContext.error("Error! " + err.toString());
+        }
     }
 
     private void AddLoginButton(CallbackContext callbackContext) {

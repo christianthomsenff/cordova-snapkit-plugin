@@ -30,7 +30,6 @@
         <source-file src="src/android/AdKit.java" target-dir="src/org/apache/cordova/plugin" />
         
         <framework src="src/android/build.gradle" custom="true" type="gradleReference" />
-
     </platform>
 
     <platform name="ios">

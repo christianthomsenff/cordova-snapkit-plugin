@@ -1,5 +1,13 @@
 class LoginKit {
 
+    async initSDK() {
+        return new Promise((resolve, reject) => {
+            cordova.exec(resolve, (err) => {
+                reject(err);
+            }, "LoginKit", "initSDK");
+        });
+    }
+
     async login() {
         return new Promise((resolve, reject) => {
             cordova.exec(resolve, (err) => {

@@ -29,7 +29,7 @@ repositories {
 }
 
 ext {
-    snapKitSdkVersion = '1.8.0'
+    snapKitSdkVersion = '1.10.0'
 }
 
 dependencies {
@@ -37,7 +37,7 @@ dependencies {
     implementation "com.snapchat.kit.sdk:login:$snapKitSdkVersion"
     implementation "com.snapchat.kit.sdk:core:$snapKitSdkVersion"
     implementation "com.snapchat.kit.sdk:creative:$snapKitSdkVersion"
-    implementation "com.snap.adkit:adkit:1.2.0"
+    implementation "com.snap.adkit:adkit:1.0.3.4"
 
     
     implementation 'androidx.lifecycle:lifecycle-common:2.0.0'
