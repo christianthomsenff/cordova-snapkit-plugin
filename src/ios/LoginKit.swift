@@ -108,4 +108,12 @@ import WebKit
                                        success: successBlock,
                                        failure: failureBlock)
     }
+
+    
+    @objc(getAccessToken:)
+    func getAccessToken(command: CDVInvokedUrlCommand) 
+    {
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: "NOT IMPLEMENTED");
+        self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
+    }
 }

@@ -91,6 +91,11 @@ public class LoginKit extends CordovaPlugin {
             return true;
         }
 
+        if(action.equals("getAccessToken")) {
+            this.GetAccessToken(callbackContext);
+            return true;
+        }
+
         return false;
     }
     
@@ -169,8 +174,16 @@ public class LoginKit extends CordovaPlugin {
         //
     }
 
-    public String GetAccessToken() {
-        return "";
+    public void GetAccessToken(CallbackContext callbackContext) {
+        try {
+            Context context = this.cordova.getActivity().getApplicationContext();
+            String accessToken = SnapLogin.getAuthTokenManager(context).getAccessToken();
+
+            callbackContext.success(accessToken);
+
+        } catch(Error err) {
+            callbackContext.error("ERROR! " + err.toString());
+        }
     }
 
     public boolean HasAccessToScope(String scope) {

@@ -48,6 +48,14 @@ class LoginKit {
             }, "LoginKit", "fetchUserData", [query]);
         });
     }
+
+    async getAccessToken(query) {
+        return new Promise((resolve, reject) => {
+            cordova.exec(resolve, (err) => {
+                reject(err);
+            }, "LoginKit", "getAccessToken");
+        });
+    }
 }
 
 class CreativeKit {
