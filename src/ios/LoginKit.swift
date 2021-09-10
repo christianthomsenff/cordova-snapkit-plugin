@@ -1,5 +1,5 @@
 import SCSDKLoginKit
-import SCSDKSnapKit
+import SCSDKCoreKit.SCSDKSnapKit
 import WebKit
 
 @objc(LoginKit) class LoginKit : CDVPlugin 
