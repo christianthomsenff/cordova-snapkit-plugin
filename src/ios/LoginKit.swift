@@ -113,19 +113,8 @@ import WebKit
     @objc(getAccessToken:)
     func getAccessToken(command: CDVInvokedUrlCommand) 
     {
-        SCSDKLoginClient.getAccessToken(completion: { (accessToken: String?, error: Error?) in
-             if let accessToken = accessToken
-             {
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: accessToken);
-                self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
-             }
-                                                     
-             if let error = error
-             {
-                print("Failed to get access token!");
-                let pluginResult = CDVPluginResult(status: CDVCommandStatus_ERROR, messageAs: String.init(format: "GetAccessToken failed! Details: %@", error.localizedDescription));
-                self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
-             }
-         });
+        let accessToken = SCSDKLoginClient.getAccessToken();
+        let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: accessToken);
+        self.commandDelegate!.send(pluginResult, callbackId: command.callbackId);
     }
 }
